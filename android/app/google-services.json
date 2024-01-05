@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "474885685633",
+    "project_id": "aplikasi-tugas-akhir-230b8",
+    "storage_bucket": "aplikasi-tugas-akhir-230b8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:474885685633:android:d76c3fbfc01119e8142880",
+        "android_client_info": {
+          "package_name": "com.example.prak_mobpro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAk_ff2_1Mm-vED7tF_UJftWGB0EXSQAH4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
