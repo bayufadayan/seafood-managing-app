@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:prak_mobpro/component/my_button.dart';
-import 'package:prak_mobpro/component/my_input_field.dart';
-import 'package:prak_mobpro/component/toast.dart';
-import 'package:prak_mobpro/firebase_auth_implementation/firebase_auth_services.dart';
-import 'package:prak_mobpro/pages/home_screen.dart';
-import 'package:prak_mobpro/pages/register_page.dart';
+import 'package:g_stock/component/my_button.dart';
+import 'package:g_stock/component/my_input_field.dart';
+import 'package:g_stock/component/toast.dart';
+import 'package:g_stock/firebase_auth_implementation/firebase_auth_services.dart';
+import 'package:g_stock/pages/home_screen.dart';
+import 'package:g_stock/pages/register_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

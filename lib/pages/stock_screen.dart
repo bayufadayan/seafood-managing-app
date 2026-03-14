@@ -4,9 +4,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:prak_mobpro/component/toast.dart';
-import 'package:prak_mobpro/model/item.dart';
-import 'package:prak_mobpro/pages/home_screen.dart';
+import 'package:g_stock/component/toast.dart';
+import 'package:g_stock/model/item.dart';
+import 'package:g_stock/pages/home_screen.dart';
 
 class StockScreen extends StatefulWidget {
   final Item item;

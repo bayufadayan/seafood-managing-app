@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prak_mobpro/pages/home_screen.dart';
+import 'package:g_stock/pages/home_screen.dart';
 
 class StockScreen extends StatefulWidget {
   const StockScreen({super.key});

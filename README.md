@@ -1,3 +1,3 @@
-# prak_mobpro
+# g_stock
 
 A new Flutter project.

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prak_mobpro/component/my_button.dart';
+import 'package:g_stock/component/my_button.dart';
 
 class MyAddressScreen extends StatelessWidget {
   final String myaddress;

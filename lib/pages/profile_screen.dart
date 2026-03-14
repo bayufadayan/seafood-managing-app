@@ -5,12 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:prak_mobpro/component/my_button.dart';
-import 'package:prak_mobpro/component/toast.dart';
-import 'package:prak_mobpro/pages/home_screen.dart';
-import 'package:prak_mobpro/pages/login_page.dart';
-import 'package:prak_mobpro/pages/myaddres_screen.dart';
-import 'package:prak_mobpro/pages/splash.dart';
+import 'package:g_stock/component/my_button.dart';
+import 'package:g_stock/component/toast.dart';
+import 'package:g_stock/pages/home_screen.dart';
+import 'package:g_stock/pages/login_page.dart';
+import 'package:g_stock/pages/myaddres_screen.dart';
+import 'package:g_stock/pages/splash.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

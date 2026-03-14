@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prak_mobpro/pages/splash.dart';
+import 'package:g_stock/pages/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 

@@ -6,16 +6,16 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:prak_mobpro/component/my_button.dart';
-import 'package:prak_mobpro/component/my_input_field.dart';
-import 'package:prak_mobpro/component/my_widget.dart';
-import 'package:prak_mobpro/component/toast.dart';
-import 'package:prak_mobpro/model/item.dart';
-import 'package:prak_mobpro/pages/home_screen.dart';
-import 'package:prak_mobpro/pages/login_page.dart';
-import 'package:prak_mobpro/pages/profile_screen.dart';
-import 'package:prak_mobpro/pages/splash.dart';
-import 'package:prak_mobpro/pages/stock_screen.dart';
+import 'package:g_stock/component/my_button.dart';
+import 'package:g_stock/component/my_input_field.dart';
+import 'package:g_stock/component/my_widget.dart';
+import 'package:g_stock/component/toast.dart';
+import 'package:g_stock/model/item.dart';
+import 'package:g_stock/pages/home_screen.dart';
+import 'package:g_stock/pages/login_page.dart';
+import 'package:g_stock/pages/profile_screen.dart';
+import 'package:g_stock/pages/splash.dart';
+import 'package:g_stock/pages/stock_screen.dart';
 
 class InputScreen extends StatefulWidget {
   const InputScreen({super.key});

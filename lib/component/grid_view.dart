@@ -1,31 +1,7 @@
-// import 'package:flutter/material.dart';
-
-// class GridDashboard extends StatelessWidget {
-//   const GridDashboard({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return GridView.builder(
-//         itemCount: 20,
-//         gridDelegate:
-//             const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-//         itemBuilder: (context, index) {
-//           return Padding(
-//             padding: const EdgeInsets.all(8.0),
-//             child: Container(
-//               height: 50,
-//               width: 50,
-//               decoration: BoxDecoration(
-//                   color: Colors.grey, borderRadius: BorderRadius.circular(15)),
-//             ),
-//           );
-//         });
-//   }
-// }
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:prak_mobpro/model/item.dart';
-import 'package:prak_mobpro/pages/stock_screen.dart';
+import 'package:g_stock/model/item.dart';
+import 'package:g_stock/pages/stock_screen.dart';
 
 class GridDashboard extends StatefulWidget {
   final Function(Item) onItemTap;

@@ -2,14 +2,14 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:prak_mobpro/component/grid_view.dart';
-import 'package:prak_mobpro/component/my_widget.dart';
-import 'package:prak_mobpro/component/toast.dart';
-import 'package:prak_mobpro/model/item.dart';
-import 'package:prak_mobpro/pages/input_screen.dart';
-import 'package:prak_mobpro/pages/profile_screen.dart';
-import 'package:prak_mobpro/pages/splash.dart';
-import 'package:prak_mobpro/pages/stock_screen.dart';
+import 'package:g_stock/component/grid_view.dart';
+import 'package:g_stock/component/my_widget.dart';
+import 'package:g_stock/component/toast.dart';
+import 'package:g_stock/model/item.dart';
+import 'package:g_stock/pages/input_screen.dart';
+import 'package:g_stock/pages/profile_screen.dart';
+import 'package:g_stock/pages/splash.dart';
+import 'package:g_stock/pages/stock_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
