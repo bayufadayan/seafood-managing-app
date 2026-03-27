@@ -12,7 +12,7 @@ import 'package:g_stock/component/my_widget.dart';
 import 'package:g_stock/component/toast.dart';
 import 'package:g_stock/model/item.dart';
 import 'package:g_stock/pages/home_screen.dart';
-import 'package:g_stock/pages/login_page.dart';
+// import 'package:g_stock/pages/login_page.dart';
 import 'package:g_stock/pages/profile_screen.dart';
 import 'package:g_stock/pages/splash.dart';
 import 'package:g_stock/pages/stock_screen.dart';

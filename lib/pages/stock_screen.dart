@@ -12,34 +12,30 @@ class StockScreen extends StatefulWidget {
   final Item item;
   final List<Item> items;
 
-  const StockScreen({Key? key, required this.item, required this.items})
-      : super(key: key);
+  const StockScreen({super.key, required this.item, required this.items});
 
   @override
   State<StockScreen> createState() => _StockScreenState();
 }
 
 class _StockScreenState extends State<StockScreen> {
-  String editedProductName = '';
-  int editedProductQuantity = 0;
-  dynamic updatedItem;
-  bool _isUploading = false;
-  String? _imageUrl;
+  Item? _updatedItem;
 
   void _showEditPopup() {
-    TextEditingController itemName =
-        TextEditingController(text: updatedItem.name);
-    TextEditingController itemCount =
-        TextEditingController(text: updatedItem.stock.toString());
-    TextEditingController expiredDateController =
-        TextEditingController(text: updatedItem.expiredDate.toString());
+    final item = _updatedItem ?? widget.item;
+    final TextEditingController itemName =
+        TextEditingController(text: item.name);
+    final TextEditingController itemCount =
+        TextEditingController(text: item.stock.toString());
+    final TextEditingController expiredDateController =
+        TextEditingController(text: item.expiredDate);
 
-    //Select tanggal
+    // Select tanggal
     Future<void> selectDate(BuildContext context) async {
       DateTime temp;
       try {
-        temp = DateFormat('EEE, d/M/yyyy').parse(updatedItem.expiredDate);
-      } catch (e) {
+        temp = DateFormat('EEE, d/M/yyyy').parse(item.expiredDate);
+      } catch (_) {
         temp = DateTime.now().add(const Duration(days: 2));
       }
       final DateTime? picked = await showDatePicker(
@@ -55,69 +51,64 @@ class _StockScreenState extends State<StockScreen> {
       }
     }
 
-    bool _validateInputs(
-        String name, int? stock, String? expiredDateController) {
+    bool validateInputs(String name, int? stock) {
       if (name.isEmpty || stock == null) {
-        stock = widget.item.stock;
-        name = widget.item.name;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('All fields must be filled in')),
+          const SnackBar(content: Text('All fields must be filled in')),
         );
         return false;
       }
       return true;
     }
 
-    void _updateProduct(String name, int stock, String expiredDate) async {
-      await FirebaseFirestore.instance
-          .collection('items')
-          .doc(widget.item.id)
-          .update({
-        'itemName': name,
-        'itemCount': stock,
-        'expiredDate': expiredDate,
-      }).then((_) {
+    Future<void> updateProduct(
+        String name, int stock, String expiredDate) async {
+      try {
+        await FirebaseFirestore.instance
+            .collection('items')
+            .doc(widget.item.id)
+            .update({
+          'itemName': name,
+          'itemCount': stock,
+          'expiredDate': expiredDate,
+        });
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Item updated successfully')),
+          const SnackBar(content: Text('Item updated successfully')),
         );
         Navigator.of(context).pop(true);
-      }).catchError((error) {
+      } catch (error) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to update product: $error')),
         );
-      });
-      // .whenComplete(() => setState(() => isLoading = false));
+      }
     }
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-            title: Text('Edit Detail Produk'),
+            title: const Text('Edit Detail Produk'),
             content: SizedBox(
               height: MediaQuery.of(context).size.height / 3,
               child: ListView(
                 children: [
                   TextField(
                     controller: itemName,
-                    decoration: InputDecoration(labelText: 'Nama Barang'),
-                    onChanged: (value) {
-                      editedProductName = value;
-                    },
+                    decoration: const InputDecoration(labelText: 'Nama Barang'),
                   ),
                   TextField(
                     controller: itemCount,
-                    decoration: InputDecoration(labelText: 'Jumlah'),
+                    decoration: const InputDecoration(labelText: 'Jumlah'),
                     keyboardType: TextInputType.number,
-                    onChanged: (value) {
-                      editedProductQuantity = int.tryParse(value) ?? 0;
-                    },
                   ),
                   TextField(
                     readOnly: true,
                     controller: expiredDateController,
-                    decoration:
-                        InputDecoration(labelText: 'Tanggal Kadaluarsa'),
+                    decoration: const InputDecoration(
+                      labelText: 'Tanggal Kadaluarsa',
+                    ),
                     onTap: () {
                       selectDate(context);
                     },
@@ -128,19 +119,20 @@ class _StockScreenState extends State<StockScreen> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text('Batal'),
+                child: const Text('Batal'),
               ),
               ElevatedButton(
-                onPressed: () async {
-                  if (_validateInputs(
+                onPressed: () {
+                  if (validateInputs(
+                      itemName.text, int.tryParse(itemCount.text))) {
+                    updateProduct(
                       itemName.text,
-                      int.tryParse(itemCount.text),
-                      expiredDateController.text)) {
-                    _updateProduct(itemName.text, int.tryParse(itemCount.text)!,
-                        expiredDateController.text);
+                      int.tryParse(itemCount.text)!,
+                      expiredDateController.text,
+                    );
                   }
                 },
-                child: Text('Simpan'),
+                child: const Text('Simpan'),
               ),
             ]);
       },
@@ -149,51 +141,51 @@ class _StockScreenState extends State<StockScreen> {
 
   Future<void> _deleteItem(String itemId) async {
     await FirebaseFirestore.instance.collection('items').doc(itemId).delete();
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Item deleted successfully')),
-      );
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-          (route) => false);
-    }
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Item deleted successfully')),
+    );
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+      (route) => false,
+    );
   }
 
-  showAlertDialog(BuildContext context, String itemId) {
-    Widget cancelButton = ElevatedButton(
+  void _showAlertDialog(BuildContext context, String itemId) {
+    final item = _updatedItem ?? widget.item;
+    final Widget cancelButton = ElevatedButton(
       child: const Text(
-        "Cancel",
+        'Cancel',
         style: TextStyle(color: Color.fromARGB(255, 83, 83, 83)),
       ),
       onPressed: () {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Action cancelled')),
+          const SnackBar(content: Text('Action cancelled')),
         );
         Navigator.of(context).pop();
       },
     );
-    Widget continueButton = ElevatedButton(
-      child: const Text(
-        "Continue",
-        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-      ),
+    final Widget continueButton = ElevatedButton(
       style: ElevatedButton.styleFrom(backgroundColor: Colors.red.shade900),
       onPressed: () async {
         await _deleteItem(itemId);
       },
+      child: const Text(
+        'Continue',
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      ),
     );
-    AlertDialog alert = AlertDialog(
-      title: Expanded(
-        child: Text(
-          'Delete item \'${updatedItem.name}\' ?',
-          style: TextStyle(
-            color: Colors.red.shade900,
-            fontWeight: FontWeight.bold,
-          ),
+    final AlertDialog alert = AlertDialog(
+      title: Text(
+        'Delete item \'${item.name}\' ?',
+        style: TextStyle(
+          color: Colors.red.shade900,
+          fontWeight: FontWeight.bold,
         ),
       ),
       content: Text(
-          "Are you sure you want to delete the item ${updatedItem.name}? This action will delete it permanently."),
+        'Are you sure you want to delete the item ${item.name}? This action will delete it permanently.',
+      ),
       actions: [
         cancelButton,
         continueButton,
@@ -210,7 +202,7 @@ class _StockScreenState extends State<StockScreen> {
 
   // Navigasi kiri kanan
   void _navigateToNextOrPreviousItem(bool isNext) {
-    int currentIndex = widget.items.indexOf(widget.item);
+    final int currentIndex = widget.items.indexOf(widget.item);
     if (isNext && currentIndex < widget.items.length - 1) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
@@ -238,38 +230,27 @@ class _StockScreenState extends State<StockScreen> {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
-    setState(() {
-      _isUploading = true;
-    });
-
     if (image != null) {
-      String? imageUrl = await _uploadImageToFirebase(File(image.path));
+      final String? imageUrl = await _uploadImageToFirebase(File(image.path));
       if (imageUrl != null) {
-        setState(() {
-          _imageUrl = imageUrl;
-        });
         await FirebaseFirestore.instance
             .collection('items')
             .doc(widget.item.id)
             .update({'itemPicture': imageUrl});
       }
     }
-
-    setState(() {
-      _isUploading = false;
-    });
   }
 
   // upload image ke firestore storage
   Future<String?> _uploadImageToFirebase(File imageFile) async {
-    String fileName =
-        'items/${DateTime.now().millisecondsSinceEpoch.toString()}';
-    Reference storageReference = FirebaseStorage.instance.ref().child(fileName);
+    final String fileName = 'items/${DateTime.now().millisecondsSinceEpoch}';
+    final Reference storageReference =
+        FirebaseStorage.instance.ref().child(fileName);
 
-    UploadTask uploadTask = storageReference.putFile(imageFile);
+    final UploadTask uploadTask = storageReference.putFile(imageFile);
     await uploadTask.whenComplete(() => {});
 
-    return await storageReference.getDownloadURL();
+    return storageReference.getDownloadURL();
   }
 
   @override
@@ -279,7 +260,7 @@ class _StockScreenState extends State<StockScreen> {
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: ((context) => const HomeScreen())),
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
             );
           },
           icon: const Icon(
@@ -308,9 +289,9 @@ class _StockScreenState extends State<StockScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              showAlertDialog(context, widget.item.id);
+              _showAlertDialog(context, widget.item.id);
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.delete,
               color: Colors.white,
             ),
@@ -321,11 +302,11 @@ class _StockScreenState extends State<StockScreen> {
         onPressed: () {
           _showEditPopup();
         },
-        child: Icon(
+        backgroundColor: Colors.orange,
+        child: const Icon(
           Icons.edit,
           color: Colors.white,
         ),
-        backgroundColor: Colors.orange,
       ),
       body: Stack(
         children: [
@@ -345,7 +326,7 @@ class _StockScreenState extends State<StockScreen> {
                     )),
                 child: Column(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 25,
                     ),
                     Row(
@@ -354,7 +335,7 @@ class _StockScreenState extends State<StockScreen> {
                       children: [
                         IconButton(
                           onPressed: () => _navigateToNextOrPreviousItem(false),
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.arrow_circle_left_rounded,
                             size: 35,
                             color: Colors.white,
@@ -368,14 +349,17 @@ class _StockScreenState extends State<StockScreen> {
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return Center(child: CircularProgressIndicator());
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
                             }
 
                             if (snapshot.hasData && snapshot.data!.exists) {
-                              var itemData =
+                              final itemData =
                                   snapshot.data!.data() as Map<String, dynamic>;
-                              updatedItem =
+                              _updatedItem =
                                   Item.fromMap(itemData, snapshot.data!.id);
+                              final item = _updatedItem!;
 
                               return Stack(
                                 alignment: Alignment.bottomRight,
@@ -389,10 +373,10 @@ class _StockScreenState extends State<StockScreen> {
                                     ),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(10),
-                                      child: updatedItem.imageUrl != "" &&
-                                              updatedItem.imageUrl != 'No Image'
+                                      child: item.imageUrl.isNotEmpty &&
+                                              item.imageUrl != 'No Image'
                                           ? Image.network(
-                                              updatedItem.imageUrl,
+                                              item.imageUrl,
                                               width: double.infinity,
                                               fit: BoxFit.cover,
                                             )
@@ -415,7 +399,7 @@ class _StockScreenState extends State<StockScreen> {
                                           shape: BoxShape.circle,
                                         ),
                                         child: IconButton(
-                                          icon: Icon(
+                                          icon: const Icon(
                                             Icons.camera_alt,
                                             color: Colors.white,
                                             size: 30,
@@ -429,7 +413,8 @@ class _StockScreenState extends State<StockScreen> {
                                 ],
                               );
                             } else {
-                              return Center(child: Text("Item not found"));
+                              return const Center(
+                                  child: Text('Item not found'));
                             }
                           },
                         ),
@@ -456,26 +441,28 @@ class _StockScreenState extends State<StockScreen> {
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
+                        return const Center(
                             child: CircularProgressIndicator(
                           color: Colors.deepOrange,
                         ));
                       }
 
                       if (snapshot.hasData && snapshot.data!.exists) {
-                        var itemData =
+                        final itemData =
                             snapshot.data!.data() as Map<String, dynamic>;
-                        updatedItem = Item.fromMap(itemData, snapshot.data!.id);
+                        _updatedItem =
+                            Item.fromMap(itemData, snapshot.data!.id);
+                        final item = _updatedItem!;
 
                         return MyProductDetails(
-                          productName: updatedItem.name,
+                          productName: item.name,
                           productDescription:
-                              'Saat ini \'${updatedItem.name}\' tersisa ${updatedItem.stock} dan akan kadaluarsa pada ${updatedItem.expiredDate}',
-                          productQuantity: updatedItem.stock,
-                          productExpiredDate: updatedItem.expiredDate,
+                              'Saat ini \'${item.name}\' tersisa ${item.stock} dan akan kadaluarsa pada ${item.expiredDate}',
+                          productQuantity: item.stock,
+                          productExpiredDate: item.expiredDate,
                         );
                       } else {
-                        return Center(child: Text("Item not found"));
+                        return const Center(child: Text('Item not found'));
                       }
                     },
                   ),
@@ -488,7 +475,7 @@ class _StockScreenState extends State<StockScreen> {
             left: (MediaQuery.of(context).size.width / 2) / 2,
             right: (MediaQuery.of(context).size.width / 2) / 2,
             child: Container(
-              margin: EdgeInsets.only(bottom: 15),
+              margin: const EdgeInsets.only(bottom: 15),
               width: MediaQuery.of(context).size.width / 2,
               height: 50,
               child: Card(
@@ -514,12 +501,12 @@ class _StockScreenState extends State<StockScreen> {
 }
 
 class MyProductDetails extends StatefulWidget {
-  String productName;
-  String productDescription;
-  int productQuantity;
-  String productExpiredDate;
+  final String productName;
+  final String productDescription;
+  final int productQuantity;
+  final String productExpiredDate;
 
-  MyProductDetails({
+  const MyProductDetails({
     super.key,
     required this.productName,
     required this.productDescription,
@@ -528,72 +515,10 @@ class MyProductDetails extends StatefulWidget {
   });
 
   @override
-  _MyProductDetailsState createState() => _MyProductDetailsState();
+  State<MyProductDetails> createState() => _MyProductDetailsState();
 }
 
 class _MyProductDetailsState extends State<MyProductDetails> {
-  String editedProductName = '';
-  String editedProductDescription = '';
-  int editedProductQuantity = 0;
-  DateTime editedProductExpiredDate = DateTime.now();
-
-  // void _showEditPopup() {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: Text('Edit Detail Produk'),
-  //         content: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: [
-  //             TextField(
-  //               decoration: InputDecoration(labelText: 'Nama Barang'),
-  //               onChanged: (value) {
-  //                 editedProductName = value;
-  //               },
-  //             ),
-  //             TextField(
-  //               decoration: InputDecoration(labelText: 'Deskripsi'),
-  //               onChanged: (value) {
-  //                 editedProductDescription = value;
-  //               },
-  //             ),
-  //             TextField(
-  //               decoration: InputDecoration(labelText: 'Jumlah'),
-  //               keyboardType: TextInputType.number,
-  //               onChanged: (value) {
-  //                 editedProductQuantity = int.tryParse(value) ?? 0;
-  //               },
-  //             ),
-  //           ],
-  //         ),
-  //         actions: [
-  //           TextButton(
-  //             onPressed: () {
-  //               Navigator.of(context).pop();
-  //             },
-  //             child: Text('Batal'),
-  //           ),
-  //           ElevatedButton(
-  //             onPressed: () {
-  //               // Implementasikan logika penyimpanan di sini
-  //               // Setelah penyimpanan selesai, panggil setState untuk memperbarui tampilan
-  //               setState(() {
-  //                 widget.productName = editedProductName;
-  //                 widget.productDescription = editedProductDescription;
-  //                 widget.productQuantity = editedProductQuantity;
-  //               });
-  //               Navigator.of(context).pop();
-  //             },
-  //             child: Text('Simpan'),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -609,7 +534,7 @@ class _MyProductDetailsState extends State<MyProductDetails> {
           child: ListView(
             // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Nama Barang',
                 style: TextStyle(
                     fontSize: 12,
@@ -618,10 +543,10 @@ class _MyProductDetailsState extends State<MyProductDetails> {
               ),
               Text(
                 widget.productName.toUpperCase(),
-                style: TextStyle(fontSize: 22),
+                style: const TextStyle(fontSize: 22),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 'Deskripsi',
                 style: TextStyle(
                     fontSize: 12,
@@ -630,10 +555,10 @@ class _MyProductDetailsState extends State<MyProductDetails> {
               ),
               Text(
                 widget.productDescription,
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 'Stock',
                 style: TextStyle(
                     fontSize: 12,
@@ -641,11 +566,11 @@ class _MyProductDetailsState extends State<MyProductDetails> {
                     color: Colors.deepOrange),
               ),
               Text(
-                '${widget.productQuantity.toString()} items',
-                style: TextStyle(fontSize: 16),
+                '${widget.productQuantity} items',
+                style: const TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 'Expired Date',
                 style: TextStyle(
                   fontSize: 12,
@@ -654,7 +579,7 @@ class _MyProductDetailsState extends State<MyProductDetails> {
                 ),
               ),
               Text(widget.productExpiredDate),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
             ],
           ),
         ),

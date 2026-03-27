@@ -2,27 +2,43 @@
 import 'package:flutter/material.dart';
 
 class MyProductDetails extends StatefulWidget {
-  String productName;
-  String productDescription;
-  int productQuantity;
+  final String productName;
+  final String productDescription;
+  final int productQuantity;
 
-  MyProductDetails({
-    Key? key,
+  const MyProductDetails({
+    super.key,
     required this.productName,
     required this.productDescription,
     required this.productQuantity,
-  }) : super(key: key);
+  });
 
   @override
-  _MyProductDetailsState createState() => _MyProductDetailsState();
+  State<MyProductDetails> createState() => _MyProductDetailsState();
 }
 
 class _MyProductDetailsState extends State<MyProductDetails> {
+  late String currentProductName;
+  late String currentProductDescription;
+  late int currentProductQuantity;
+
   String editedProductName = '';
   String editedProductDescription = '';
   int editedProductQuantity = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    currentProductName = widget.productName;
+    currentProductDescription = widget.productDescription;
+    currentProductQuantity = widget.productQuantity;
+  }
+
   void showEditPopup() {
+    editedProductName = currentProductName;
+    editedProductDescription = currentProductDescription;
+    editedProductQuantity = currentProductQuantity;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -65,9 +81,9 @@ class _MyProductDetailsState extends State<MyProductDetails> {
                 // Implementasikan logika penyimpanan di sini
                 // Setelah penyimpanan selesai, panggil setState untuk memperbarui tampilan
                 setState(() {
-                  widget.productName = editedProductName;
-                  widget.productDescription = editedProductDescription;
-                  widget.productQuantity = editedProductQuantity;
+                  currentProductName = editedProductName;
+                  currentProductDescription = editedProductDescription;
+                  currentProductQuantity = editedProductQuantity;
                 });
                 Navigator.of(context).pop();
               },
@@ -100,7 +116,7 @@ class _MyProductDetailsState extends State<MyProductDetails> {
               ),
               SizedBox(height: 8),
               Text(
-                widget.productName,
+                currentProductName,
                 style: TextStyle(fontSize: 16),
               ),
               SizedBox(height: 16),
@@ -110,7 +126,7 @@ class _MyProductDetailsState extends State<MyProductDetails> {
               ),
               SizedBox(height: 8),
               Text(
-                widget.productDescription,
+                currentProductDescription,
                 style: TextStyle(fontSize: 16),
               ),
               SizedBox(height: 16),
@@ -120,7 +136,7 @@ class _MyProductDetailsState extends State<MyProductDetails> {
               ),
               SizedBox(height: 8),
               Text(
-                widget.productQuantity.toString(),
+                currentProductQuantity.toString(),
                 style: TextStyle(fontSize: 16),
               ),
               SizedBox(height: 16),

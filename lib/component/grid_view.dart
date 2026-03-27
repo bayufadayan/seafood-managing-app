@@ -4,7 +4,7 @@ import 'package:g_stock/model/item.dart';
 import 'package:g_stock/pages/stock_screen.dart';
 
 class GridDashboard extends StatefulWidget {
-  final Function(Item) onItemTap;
+  final ValueChanged<Item> onItemTap;
   final String search;
 
   const GridDashboard(
@@ -15,54 +15,51 @@ class GridDashboard extends StatefulWidget {
 }
 
 class _GridDashboardState extends State<GridDashboard> {
-  String? itemNameConfirmation;
   List<Item> items = [];
 
   Future<void> _deleteItem(String itemId) async {
     await FirebaseFirestore.instance.collection('items').doc(itemId).delete();
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Item deleted successfully')),
-      );
-    }
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Item deleted successfully')),
+    );
     Navigator.of(context).pop();
   }
 
-  showAlertDialog(BuildContext context, String itemId, String itemName) {
-    Widget cancelButton = ElevatedButton(
+  void _showAlertDialog(BuildContext context, String itemId, String itemName) {
+    final Widget cancelButton = ElevatedButton(
       child: const Text(
-        "Cancel",
+        'Cancel',
         style: TextStyle(color: Color.fromARGB(255, 83, 83, 83)),
       ),
       onPressed: () {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Action cancelled')),
+          const SnackBar(content: Text('Action cancelled')),
         );
         Navigator.of(context).pop();
       },
     );
-    Widget continueButton = ElevatedButton(
-      child: const Text(
-        "Continue",
-        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-      ),
+    final Widget continueButton = ElevatedButton(
       style: ElevatedButton.styleFrom(backgroundColor: Colors.red.shade900),
       onPressed: () async {
         await _deleteItem(itemId);
       },
+      child: const Text(
+        'Continue',
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      ),
     );
-    AlertDialog alert = AlertDialog(
-      title: Expanded(
-        child: Text(
-          'Delete item \'${itemName!}\' ?',
-          style: TextStyle(
-            color: Colors.red.shade900,
-            fontWeight: FontWeight.bold,
-          ),
+    final AlertDialog alert = AlertDialog(
+      title: Text(
+        'Delete item \'$itemName\'?',
+        style: TextStyle(
+          color: Colors.red.shade900,
+          fontWeight: FontWeight.bold,
         ),
       ),
       content: Text(
-          "Are you sure you want to delete the item ${itemName!}? This action will delete it permanently."),
+        'Are you sure you want to delete the item $itemName? This action will delete it permanently.',
+      ),
       actions: [
         cancelButton,
         continueButton,
@@ -87,21 +84,21 @@ class _GridDashboardState extends State<GridDashboard> {
           .collection('items')
           .orderBy('itemName')
           .startAt([widget.search]).endAt(
-              [widget.search + '\uf8ff']).snapshots();
+              ['${widget.search}\uf8ff']).snapshots();
     }
 
     return StreamBuilder<QuerySnapshot>(
       stream: stream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return Center(child: Text("No items found"));
+          return const Center(child: Text('No items found'));
         }
 
-        if (snapshot.hasData && !snapshot.data!.docs.isEmpty) {
+        if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
           items = snapshot.data!.docs
               .map((doc) =>
                   Item.fromMap(doc.data() as Map<String, dynamic>, doc.id))
@@ -116,7 +113,6 @@ class _GridDashboardState extends State<GridDashboard> {
             childAspectRatio: 0.8,
           ),
           itemBuilder: (context, index) {
-            var data = snapshot.data!.docs[index];
             Item item = items[index];
             return GestureDetector(
               onTap: () => widget.onItemTap(item),
@@ -130,9 +126,8 @@ class _GridDashboardState extends State<GridDashboard> {
 
   Widget _buildItemCard(Item item) {
     return LayoutBuilder(builder: (context, constraints) {
-      double cardHeight = constraints.maxHeight;
-      double cardWidht = constraints.maxWidth;
-      itemNameConfirmation = item.name;
+      final double cardHeight = constraints.maxHeight;
+      final double cardWidth = constraints.maxWidth;
 
       return Card(
         elevation: 4,
@@ -140,61 +135,61 @@ class _GridDashboardState extends State<GridDashboard> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: Stack(
           children: [
-            Container(
-              child: item.imageUrl != "" && item.imageUrl != 'No Image'
-                  ? Image.network(
-                      item.imageUrl,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      height: cardHeight,
-                    )
-                  : Image.asset(
-                      'assets/no_image.png',
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      height: cardHeight,
-                    ),
-            ),
+            item.imageUrl.isNotEmpty && item.imageUrl != 'No Image'
+                ? Image.network(
+                    item.imageUrl,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    height: cardHeight,
+                  )
+                : Image.asset(
+                    'assets/no_image.png',
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    height: cardHeight,
+                  ),
             Positioned(
-                top: 0,
-                child: Container(
-                  width: cardWidht,
-                  height: cardHeight / 5,
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                        Colors.black38,
-                        Color.fromARGB(50, 0, 0, 0)
-                      ])),
-                )),
+              top: 0,
+              child: Container(
+                width: cardWidth,
+                height: cardHeight / 5,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.black38, Color.fromARGB(50, 0, 0, 0)],
+                  ),
+                ),
+              ),
+            ),
             Positioned(
               bottom: 15,
               left: 0,
               right: 0,
               child: Container(
-                padding: EdgeInsets.only(left: 5, right: 5),
+                padding: const EdgeInsets.only(left: 5, right: 5),
                 height: cardHeight / 4,
-                color: Colors.deepOrange.withOpacity(0.8),
+                color: Colors.deepOrange.withValues(alpha: 0.8),
                 child: Column(
                   children: <Widget>[
                     Text(
                       item.code,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          color: Color.fromARGB(200, 255, 255, 255),
-                          fontSize: 12),
+                      style: const TextStyle(
+                        color: Color.fromARGB(200, 255, 255, 255),
+                        fontSize: 12,
+                      ),
                     ),
                     Text(
                       item.name.toUpperCase(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -204,13 +199,14 @@ class _GridDashboardState extends State<GridDashboard> {
               top: -7,
               right: -9,
               child: PopupMenuButton<String>(
-                onSelected: (String value) async {
+                onSelected: (String value) {
                   if (value == 'Edit') {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: ((context) =>
-                            StockScreen(item: item, items: items))));
+                      builder: (context) =>
+                          StockScreen(item: item, items: items),
+                    ));
                   } else if (value == 'Delete') {
-                    showAlertDialog(context, item.id, item.name);
+                    _showAlertDialog(context, item.id, item.name);
                   }
                 },
                 itemBuilder: (BuildContext context) {
@@ -221,7 +217,7 @@ class _GridDashboardState extends State<GridDashboard> {
                     );
                   }).toList();
                 },
-                icon: Icon(Icons.more_vert, color: Colors.white),
+                icon: const Icon(Icons.more_vert, color: Colors.white),
               ),
             ),
             Positioned(
@@ -230,7 +226,7 @@ class _GridDashboardState extends State<GridDashboard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Expired on',
                     style: TextStyle(color: Colors.white, fontSize: 9),
                     textAlign: TextAlign.center,
