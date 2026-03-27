@@ -74,6 +74,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     User? user = await _auth.signUpWithEmailAndPassword(email, password);
     if (user != null) {
+      if (!mounted) return;
       setState(() {
         _isLoading = true;
       });
@@ -107,11 +108,11 @@ class _RegisterPageState extends State<RegisterPage> {
             children: [
               //icon
               SizedBox(
+                height: 100,
+                width: 100,
                 child: Image.asset(
                   'assets/Logo Gudang.png',
                 ),
-                height: 100,
-                width: 100,
               ),
 
               //input field

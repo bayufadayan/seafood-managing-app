@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MyWidget extends StatelessWidget {
+  const MyWidget({super.key});
+
 
   void _showPopupHelpDialog(BuildContext context) {
     showDialog(

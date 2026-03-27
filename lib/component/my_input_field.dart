@@ -5,12 +5,12 @@ class MyInputField extends StatelessWidget {
   // final TextEditingController controller;
   final String hintText;
   final bool obscureText;
-  final icon;
+  final Widget icon;
   final TextEditingController? controller;
-  final suffixIcon;
+  final Widget? suffixIcon;
   final bool? enable;
   final bool readOnly;
-  final onTap;
+  final GestureTapCallback? onTap;
   final bool isNumber;
 
   const MyInputField(
@@ -51,7 +51,7 @@ class MyInputField extends StatelessWidget {
               ? Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Container(
+                    SizedBox(
                       height: 20,
                       child: VerticalDivider(color: Colors.grey),
                     ),

@@ -34,7 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       desc: 'Work In Progress',
       btnOkOnPress: () {
       },
-    )..show();
+    ).show();
   }
 
   void _showLogout(BuildContext context) {
@@ -84,6 +84,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
+    if (!mounted) return;
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => SplashScreen()),
     );
@@ -135,18 +136,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return;
     }
 
-    String userEmail = FirebaseAuth.instance.currentUser!.email!;
-    await FirebaseFirestore.instance.collection('users').doc(userEmail).update({
-      'fullname': fullName.text.toUpperCase(),
-      'address': address.text,
-    }).then((_) {
+    try {
+      String userEmail = FirebaseAuth.instance.currentUser!.email!;
+      await FirebaseFirestore.instance.collection('users').doc(userEmail).update({
+        'fullname': fullName.text.toUpperCase(),
+        'address': address.text,
+      });
+
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Profile updated successfully')),
       );
       Navigator.of(context).pop();
-    }).catchError((error) {
+    } catch (error) {
       showToast('Failed to update profile: $error');
-    });
+    }
   }
 
   void popup() {
@@ -332,7 +336,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     icon: Icon(Icons.camera_alt),
                                     style: ButtonStyle(
                                       foregroundColor:
-                                          MaterialStateProperty.all<Color>(
+                                          WidgetStateProperty.all<Color>(
                                               Colors.white), // Warna ikon
                                     ),
                                   )),
@@ -418,6 +422,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     GestureDetector(
                       onTap: () async {
                         String address = await _getUserAdress();
+                        if (!context.mounted) return;
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) =>
@@ -461,13 +466,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 class MenuProfileList extends StatelessWidget {
   const MenuProfileList(
-      {Key? key,
+      {super.key,
       required this.title,
       required this.icon,
       // required this.onPress,
       this.endIcon = true,
-      this.textColor})
-      : super(key: key);
+      this.textColor});
 
   final String title;
   final IconData icon;
@@ -499,7 +503,7 @@ class MenuProfileList extends StatelessWidget {
                 height: 30,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100),
-                  color: Colors.grey.withOpacity(0.1),
+                  color: Colors.grey.withValues(alpha: 0.1),
                 ),
                 child: const Icon(
                   Icons.edit,

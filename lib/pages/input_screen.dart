@@ -153,6 +153,7 @@ class _InputScreenState extends State<InputScreen> {
         _isLoading = false;
       });
       _clearForm();
+      if (!mounted) return;
       Navigator.of(context)
           .push(MaterialPageRoute(builder: ((context) => const HomeScreen())));
     }).catchError((error) {
@@ -189,7 +190,7 @@ class _InputScreenState extends State<InputScreen> {
       title: 'INFO!',
       desc: 'Work In Progress',
       btnOkOnPress: () {},
-    )..show();
+    ).show();
   }
   void _showLogout(BuildContext context) {
     AwesomeDialog(

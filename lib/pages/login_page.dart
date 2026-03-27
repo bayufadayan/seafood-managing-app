@@ -46,6 +46,7 @@ class _LoginPageState extends State<LoginPage> {
 
     if (user != null) {
       showToast('login Successfully', bgcolor: Colors.green);
+      if (!mounted) return;
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: ((context) => HomeScreen())));
       setState(() {
@@ -69,11 +70,11 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               //icon
               SizedBox(
+                height: 100,
+                width: 100,
                 child: Image.asset(
                   'assets/Logo Gudang.png',
                 ),
-                height: 100,
-                width: 100,
               ),
 
               //input field

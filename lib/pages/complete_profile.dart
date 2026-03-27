@@ -64,6 +64,7 @@ class _CompleteProfileAfterRegistState
       'image' : _imageUrl,
     });
     showToast('Profile Completed');
+    if (!mounted) return;
     Navigator.of(context)
         .pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
     fullname.clear();
@@ -144,7 +145,7 @@ class _CompleteProfileAfterRegistState
                       onPressed: _pickImage,
                       icon: Icon(Icons.camera_alt),
                       style: ButtonStyle(
-                        foregroundColor: MaterialStateProperty.all<Color>(
+                        foregroundColor: WidgetStateProperty.all<Color>(
                             Colors.white), // Warna ikon
                       ),
                     )),

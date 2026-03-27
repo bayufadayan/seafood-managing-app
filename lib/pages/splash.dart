@@ -39,11 +39,11 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
+              height: 100,
+              width: 100,
               child: Image.asset(
                 'assets/Logo Gudang.png',
               ),
-              height: 100,
-              width: 100,
             ), //nanti logonya ganti aja
             SizedBox(
               height: 20,

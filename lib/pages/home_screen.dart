@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
       title: 'INFO!',
       desc: 'Work In Progress',
       btnOkOnPress: () {},
-    )..show();
+    ).show();
   }
 
   void _showLogout(BuildContext context) {
@@ -106,6 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
+    if (!mounted) return;
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => SplashScreen()),
     );
@@ -161,11 +162,11 @@ class _HomeScreenState extends State<HomeScreen> {
             Navigator.of(context)
                 .push(MaterialPageRoute(builder: (context) => InputScreen()));
           },
+          backgroundColor: Colors.orange,
           child: Icon(
             Icons.add,
             color: Colors.white,
           ),
-          backgroundColor: Colors.orange,
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
