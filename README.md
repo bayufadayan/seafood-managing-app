@@ -30,40 +30,17 @@ Project ini dibuat untuk memudahkan alur pengelolaan inventaris seafood secara s
 
 ## Screenshot Aplikasi
 
-### Splash Screen
-![Splash](./assets/screenshots/Splash.jpeg)
-
-### 1. Halaman Login
-
-![Login](./assets/screenshots/Login.jpeg)
-
-### 2. Halaman Register
-
-![Register](./assets/screenshots/Register.jpeg)
-
-### 3. Complete Profile
-
-![Complete Profile](./assets/screenshots/Complete%20Your%20Profile.jpeg)
-
-### 4. Dashboard
-
-![Dashboard](./assets/screenshots/Dashboard.jpeg)
-
-### 5. Input Barang
-
-![Input Barang](./assets/screenshots/Input.jpeg)
-
-### 6. Stock Barang
-
-![Stock Barang](./assets/screenshots/Stock.jpeg)
-
-### 7. Profile
-
-![Profile](./assets/screenshots/Profile.jpeg)
-
-### 8. About
-
-![Profile](./assets/screenshots/About.jpeg)
+<p align="center">
+	<img src="./assets/screenshots/Splash.jpeg" alt="Splash" width="210" />
+	<img src="./assets/screenshots/Login.jpeg" alt="Login" width="210" />
+	<img src="./assets/screenshots/Register.jpeg" alt="Register" width="210" />
+	<img src="./assets/screenshots/Complete%20Your%20Profile.jpeg" alt="Complete Profile" width="210" />
+	<img src="./assets/screenshots/Dashboard.jpeg" alt="Dashboard" width="210" />
+	<img src="./assets/screenshots/Input.jpeg" alt="Input Barang" width="210" />
+	<img src="./assets/screenshots/Stock.jpeg" alt="Stock Barang" width="210" />
+	<img src="./assets/screenshots/Profile.jpeg" alt="Profile" width="210" />
+	<img src="./assets/screenshots/About.jpeg" alt="About" width="210" />
+</p>
 
 ## Cara Menjalankan
 
